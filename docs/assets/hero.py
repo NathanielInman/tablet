@@ -73,14 +73,18 @@ def text_w(s, size):
 # ---------------------------------------------------------------- glyphs
 # Drawn, not typed: the Nerd Font glyphs would not survive an <img>.
 
-def g_lan(cx, cy, c, connected=True):
-    """md-lan-connect / md-lan-disconnect: a box above two, joined, or with
-    the joint cut."""
-    o = (f'<g fill="none" stroke="{c}" stroke-width="1.4"><rect x="{cx - 2.5}" y="{cy - 7}" width="5" height="4" rx="1"/>'
-         f'<rect x="{cx - 7}" y="{cy + 3}" width="5" height="4" rx="1"/><rect x="{cx + 2}" y="{cy + 3}" width="5" height="4" rx="1"/>'
-         f'<path d="M{cx - 4.5},{cy + 3} v-2 h9 v2"/>')
-    o += f'<path d="M{cx},{cy - 3} v2"/>' if connected else f'<path d="M{cx - 2},{cy - 2.6} l4,1.6" stroke-width="1.2"/>'
-    return o + "</g>"
+# md-lan-connect (U+F0318) and md-lan-disconnect (U+F0319) from the Nerd
+# Font waybar uses, in font units (1000 to the em, y up, 918 wide).
+LAN_CONNECT = "M125 819Q92 819 67.5 794.5Q43 770 43 735V569Q43 534 67.5 509.5Q92 485 125 485H0V401H500V485H375Q410 485 434.5 509.5Q459 534 459 569V735Q459 770 434.5 794.5Q410 819 375 819ZM125 735H375V569H125ZM84 319V110V26H375V110H168V319ZM543 319Q508 319 483.5 294.5Q459 270 459 235V69Q459 34 483.5 9.5Q508 -15 543 -15H418V-99H918V-15H793Q826 -15 850.5 9.5Q875 34 875 69V235Q875 270 850.5 294.5Q826 319 793 319ZM543 235H793V69H543Z"
+LAN_DISCONNECT = "M125 819Q92 819 67.5 794.5Q43 770 43 735V569Q43 534 67.5 509.5Q92 485 125 485H0V401H500V485H375Q410 485 434.5 509.5Q459 534 459 569V735Q459 770 434.5 794.5Q410 819 375 819ZM125 735H375V569H125ZM543 319Q508 319 483.5 294.5Q459 270 459 235V69Q459 34 483.5 9.5Q508 -15 543 -15H418V-99H918V-15H793Q826 -15 850.5 9.5Q875 34 875 69V235Q875 270 850.5 294.5Q826 319 793 319ZM121 299 61 241 150 151 61 63 121 5 209 92 297 5 357 63 268 151 357 241 297 299 209 210ZM543 235H793V69H543Z"
+
+
+def g_lan(cx, cy, c, connected=True, size=14.0):
+    """The glyph Tablet prints for its lamp: md-lan-connect while held,
+    md-lan-disconnect otherwise, `size` px tall, centered on (cx, cy)."""
+    s = size / 918
+    d = LAN_CONNECT if connected else LAN_DISCONNECT
+    return f'<path d="{d}" fill="{c}" transform="translate({cx - 459 * s:.2f},{cy + 360 * s:.2f}) scale({s:.5f},{-s:.5f})"/>'
 
 
 def g_bell(cx, cy, c):
