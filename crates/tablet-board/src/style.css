@@ -1,0 +1,142 @@
+/* Tablet drawer default theme. With theme.from = "waybar" the bar's own
+   colors and font replace these tokens. Override anything in
+   ~/.config/tablet/style.css; redefining an @define-color token recolors
+   everything that uses it. */
+
+@define-color tb_panel rgba(30, 32, 36, 0.97);
+@define-color tb_well #15171a;
+@define-color tb_border #41464e;
+@define-color tb_fg #c5c8c6;
+@define-color tb_dim #7c838e;
+@define-color tb_tile rgba(255, 255, 255, 0.035);
+@define-color tb_tile_border rgba(255, 255, 255, 0.07);
+@define-color tb_tile_hover #33373d;
+@define-color tb_accent #88c0d0;
+@define-color tb_ok #a3be8c;
+@define-color tb_warn #ebcb8b;
+@define-color tb_stale #d08770;
+@define-color tb_bad #bf616a;
+@define-color tb_idle #555b64;
+
+window.tablet {
+  background: transparent;
+  color: @tb_fg;
+  font-family: monospace;
+  font-size: 13px;
+}
+window.tablet * { font-family: inherit; }
+
+.panel {
+  background: @tb_panel;
+  border: 1px solid @tb_border;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(0, 0, 0, 0.35);
+  padding: 14px;
+}
+
+.dim { color: @tb_dim; }
+.mono { font-size: 12px; }
+.num { font-feature-settings: "tnum"; }
+
+/* ---- the state colors, by class ---- */
+.held { color: @tb_accent; }
+.off { color: @tb_idle; }
+.wait { color: @tb_warn; }
+.stale { color: @tb_stale; }
+.bad { color: @tb_bad; }
+
+/* ---- header ---- */
+.lamp { font-size: 14px; }
+.brand { font-weight: bold; letter-spacing: 2px; font-size: 12px; }
+.sub { color: @tb_dim; font-size: 11px; }
+.chip {
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: alpha(@tb_idle, 0.2);
+}
+.chip.off { color: @tb_dim; }
+.chip.held { background: alpha(@tb_accent, 0.15); }
+.chip.wait { background: alpha(@tb_warn, 0.15); }
+.chip.stale { background: alpha(@tb_stale, 0.16); }
+.chip.bad { background: alpha(@tb_bad, 0.18); }
+
+.notice { color: @tb_dim; font-size: 11px; }
+.notice.error { color: @tb_bad; }
+
+/* ---- tabs ---- */
+.tabs button {
+  background: transparent;
+  border: none;
+  border-radius: 7px;
+  box-shadow: none;
+  color: @tb_dim;
+  min-height: 0;
+  padding: 4px 0;
+  font-size: 11.5px;
+}
+.tabs button:hover { background: @tb_tile_hover; color: @tb_fg; }
+.tabs button.on { background: alpha(@tb_accent, 0.75); color: @tb_well; font-weight: bold; }
+.tabs button.alert { color: @tb_bad; }
+.tabs button.on.alert { background: alpha(@tb_bad, 0.85); color: @tb_well; }
+
+/* ---- cards ---- */
+.card {
+  background: @tb_tile;
+  border: 1px solid @tb_tile_border;
+  border-radius: 10px;
+  padding: 10px 11px;
+}
+.card.stale { border-color: alpha(@tb_stale, 0.45); }
+.card.bad { border-color: alpha(@tb_bad, 0.5); background: alpha(@tb_bad, 0.05); }
+.card.wait { border-color: alpha(@tb_warn, 0.35); }
+.card.ask { border-color: alpha(@tb_warn, 0.55); background: alpha(@tb_warn, 0.06); }
+.card.held, .card.off, .card.plain { color: @tb_fg; }
+.t-label {
+  color: @tb_dim;
+  font-size: 10px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+.t-label.phase.held { color: @tb_accent; }
+.t-label.phase.wait { color: @tb_warn; }
+.t-label.phase.stale { color: @tb_stale; }
+.t-label.phase.bad { color: @tb_bad; }
+.t-label.phase.off { color: @tb_dim; }
+.big { font-size: 24px; font-weight: bold; font-feature-settings: "tnum"; }
+.big.off { color: @tb_dim; }
+.title { font-weight: bold; font-size: 14px; }
+.reason { font-size: 12px; }
+.mark { font-weight: bold; min-width: 12px; }
+.mark.ok { color: @tb_ok; }
+.mark.bad { color: @tb_bad; }
+.mark.dim { color: @tb_dim; }
+.what { font-weight: bold; }
+.graph { color: @tb_accent; }
+.card.stale .graph { color: @tb_stale; }
+
+/* ---- buttons ---- */
+.buttons button {
+  background: @tb_tile;
+  border: 1px solid @tb_tile_border;
+  border-radius: 8px;
+  box-shadow: none;
+  color: @tb_fg;
+  min-height: 0;
+  padding: 4px 11px;
+  font-size: 12px;
+}
+.buttons button:hover { background: @tb_tile_hover; }
+.buttons button.primary {
+  background: @tb_accent;
+  border-color: @tb_accent;
+  color: @tb_well;
+  font-weight: bold;
+}
+.card.bad .buttons button.primary,
+.card.stale .buttons button.primary { background: @tb_warn; border-color: @tb_warn; }
+.card.ask .buttons button.primary { background: @tb_warn; border-color: @tb_warn; }
+.buttons button.primary:hover { background: shade(@tb_accent, 1.08); }
+
+.foot { color: @tb_dim; font-size: 10.5px; }
