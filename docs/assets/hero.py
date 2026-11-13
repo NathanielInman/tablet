@@ -162,6 +162,11 @@ class Board:
     graph: tuple = field(default=(3, 5, 4, 9, 14, 11, 22, 18, 12, 16, 26, 30, 21, 17, 24, 28, 33, 27, 19, 23))
 
 
+# The stale state's reason and its traffic dying away, for the story here
+# and the dot-files tour.
+STALE_REASON = "openvpn3 says connected, but all 2 probes failed twice in a row"
+STALE_GRAPH = (26, 30, 21, 17, 24, 6, 2, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0)
+
 DRAWER_W = 400  # drawer.width
 P = 15  # the panel's border and padding
 IW = DRAWER_W - 2 * P
@@ -699,8 +704,7 @@ STATES = [  # (board, spans)
     (Board("signin", phase="signin", big="waiting on you", reason="waiting for the web sign-in"), [(SIGNIN, HELD)]),
     (Board("held", big="0s"), [(HELD, STALE)]),
     (Board("stale", phase="stale", big="3m", probes=PROBES_BAD,
-           reason="openvpn3 says connected, but all 2 probes failed twice in a row",
-           graph=(26, 30, 21, 17, 24, 6, 2, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0)), [(STALE, CLICK_RECONNECT + LAG)]),
+           reason=STALE_REASON, graph=STALE_GRAPH), [(STALE, CLICK_RECONNECT + LAG)]),
     (Board("connecting", phase="connecting", big="1s…", reason="starting openvpn3"), [(CLICK_RECONNECT + LAG, HELD2)]),
     (Board("held", big="1s", graph=(0, 0, 0, 1, 0, 3, 9, 14, 11, 22, 18, 12, 16, 26, 30, 21, 17, 24, 28, 31)), [(HELD2, CLICK_CHECKS + LAG)]),
     (Board("held", tab="checks"), [(CLICK_CHECKS + LAG, CLICK_HISTORY + LAG)]),
