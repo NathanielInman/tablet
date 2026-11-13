@@ -1,0 +1,49 @@
+# ~/.config/tablet/config.toml
+#
+# One [[profile]] per VPN. Everything else is optional and shown with its
+# default.
+
+[[profile]]
+name = "work"
+ovpn = "~/work.ovpn"
+# Resolvers and domains the tunnel's DNS should have. Tablet checks them
+# while connected; with apply_dns = true it sets them when openvpn3 did not.
+dns = ["10.8.0.2"]
+zones = ["corp.example.com"]
+apply_dns = false
+# Hosts that must answer through the tunnel (port 443 when left out).
+probes = ["git.corp.example.com:22", "wiki.corp.example.com"]
+
+# Names that never go through this tunnel, and what to do instead.
+[[profile.outside]]
+host = "*.cloud.example.com"
+note = "public endpoints; use the cloud gateway, not the VPN"
+
+[bar]
+words = true
+namespace = "waybar"
+
+[checks]
+every = 120    # seconds between checks while connected (0: only when asked)
+timeout = 4    # seconds per probe
+silence = 90   # seconds of nothing from the server before a tunnel is stale
+grace = 90     # seconds connecting or reconnecting before it has failed
+
+[openvpn3]
+command = "openvpn3"
+start_timeout = 300
+opener = "xdg-open"
+
+[doctor]
+binaries = ["/usr/bin/openvpn3", "/usr/lib/openvpn3-linux"]
+repair = ""     # e.g. "paru -S --rebuild openvpn3" for the AUR package
+terminal = ""   # e.g. "kitty --hold sh -c"
+
+[drawer]
+width = 400.0
+max_height = 0.85
+gap = 8.0
+addresses = false
+
+[theme]
+from = "waybar"
