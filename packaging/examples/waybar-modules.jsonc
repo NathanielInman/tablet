@@ -1,0 +1,10 @@
+// Waybar module for Tablet, from the README. Merge it into your
+// ~/.config/waybar/config.jsonc and add "custom/tablet" to a modules list.
+"custom/tablet": {
+  "exec": "~/.local/bin/tablet bar",
+  "return-type": "json",
+  "on-click": "~/.local/bin/tablet flip",
+  "on-click-right": "~/.local/bin/tablet toggle",
+  "on-click-middle": "~/.local/bin/tablet check",
+  "tooltip": true
+}

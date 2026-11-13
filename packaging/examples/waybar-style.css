@@ -1,0 +1,15 @@
+/* Waybar styles for Tablet's lamp, from the README. Merge into
+   ~/.config/waybar/style.css and adjust the colors. */
+#custom-tablet.off,
+#custom-tablet.offline { color: #616e88; }
+#custom-tablet.held { color: #88c0d0; }
+#custom-tablet.degraded,
+#custom-tablet.connecting,
+#custom-tablet.signin,
+#custom-tablet.asking { color: #ebcb8b; }
+#custom-tablet.stale { color: #d08770; }
+#custom-tablet.failed,
+#custom-tablet.dropped,
+#custom-tablet.broken { color: #bf616a; }
+#custom-tablet.pulse { animation: tablet-pulse 1.2s ease-in-out infinite alternate; }
+@keyframes tablet-pulse { to { opacity: 0.45; } }

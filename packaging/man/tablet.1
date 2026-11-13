@@ -1,0 +1,165 @@
+.TH TABLET 1 "2026-11-13" "tablet" "User Commands"
+.SH NAME
+tablet \- the VPN lamp for waybar, around openvpn3
+.SH SYNOPSIS
+.B tablet
+.I command
+.RI [ arguments ]
+.SH DESCRIPTION
+.B tablet
+follows every openvpn3 session on the system bus and shows one lamp in a
+waybar module: dim while nothing is connected, frost while a tunnel is held
+and its checks pass, amber while it connects, waits on a sign\-in or an
+agent's request, and red when it is stale, failed or dropped.
+A held tunnel is checked: the hosts a profile names must answer, the
+tunnel's DNS must have the profile's resolvers and zones, and the server
+must keep sending.
+A tunnel openvpn3 calls connected that fails those checks is
+.IR stale .
+.PP
+Tablet does not speak the VPN protocol.
+It starts sessions with
+.BR "openvpn3 session\-start" ,
+ends them over D\-Bus, and reads the rest.
+It also watches openvpn3 itself: when an update removes a library an
+openvpn3 build needs, the lamp says
+.I rebuild
+before you click it.
+.PP
+One binary is the daemon, the waybar module and the command line.
+Commands start the daemon when it is not running.
+Right\-clicking the module opens a drawer
+.RB ( tablet\-board ).
+.SH COMMANDS
+.TP
+.BI connect " \fR[\fPprofile\fR]\fP"
+Start a session for the profile, or the default profile.
+A stale, failed or dropped profile is reconnected.
+.TP
+.BI disconnect " \fR[\fPprofile\fR|\fP\-\-all\fR]\fP"
+End the profile's sessions, or every session Tablet sees with
+.BR \-\-all .
+.TP
+.BI reconnect " \fR[\fPprofile\fR]\fP"
+End the profile's session and start a new one.
+.TP
+.B flip
+What a left click on the lamp does: accept a waiting agent request, open a
+waiting sign\-in page, connect the default profile when it is off,
+disconnect it when it is held or connecting, reconnect it otherwise.
+.TP
+.BI ack " \fR[\fPprofile\fR]\fP"
+Dismiss a dropped or failed profile; a failed session that lingers is
+disconnected.
+.TP
+.BI signin " \fR[\fPprofile\fR]\fP"
+Open the sign\-in page openvpn3 is waiting on again.
+.TP
+.BI check " \fR[\fPprofile\fR]\fP"
+Check now and print each probe, the DNS and the traffic counters.
+Exits 75 when a tunnel does not work.
+.TP
+.BI why " host\fR|\fPurl"
+Say which profile a host needs (by the profiles'
+.B zones
+and
+.B outside
+lists) and whether it is up.
+Exits 75 when the profile it needs is not held, so an agent can tell a
+dropped tunnel from a broken service.
+.TP
+.BI need " \fR[\fPprofile\fR] [\fP\-\-reason text\fR] [\fP\-\-timeout secs\fR]\fP \-\- command\fR...\fP"
+Run a command once the profile is connected.
+When it is not, the lamp turns amber and the drawer shows the request,
+the command, its directory and the reason; nothing connects until you
+click Connect.
+Exits 75 without running the command when you decline or nobody answers
+within the timeout (300 seconds).
+.TP
+.BR status " [" \-\-json ]
+Every profile, any session no profile claims, waiting requests and
+openvpn3's health.
+.TP
+.BR history " [" \-\-count
+.IR n ]
+What happened, newest first: connected, reconnected, stale, recovered,
+failed, dropped, disconnected, broken, repaired.
+.TP
+.BR doctor " [" \-\-repair ]
+Check the config, the profiles' files, openvpn3 and its libraries,
+systemd\-resolved, the polkit rule, the daemon, the compositor and the
+waybar config.
+With
+.B \-\-repair
+run
+.BR doctor.repair .
+.TP
+.BR toggle " [" \-\-center ]
+Open or close the drawer from the clicked icon (for
+.BR on\-click\-right ).
+.TP
+.BR show " [" \-\-center "], " hide
+Open or close the drawer.
+.TP
+.B bar
+The waybar module: prints a JSON line whenever the lamp changes.
+Starts the daemon if it is not running.
+.TP
+.B daemon
+Run the daemon in the foreground.
+Exits 75 when another daemon is already running.
+.TP
+.B restart
+Restart the daemon; the drawer starts on the next click.
+.TP
+.BR \-\-version
+Print the version.
+.SH WAYBAR
+.nf
+"custom/tablet": {
+  "exec": "tablet bar",
+  "return-type": "json",
+  "on-click": "tablet flip",
+  "on-click-right": "tablet toggle",
+  "on-click-middle": "tablet check"
+}
+.fi
+.PP
+Classes:
+.BR off ", " held ", " degraded ", " connecting ", " signin ", " asking ,
+.BR stale ", " failed ", " dropped ", " broken ", " offline ,
+and
+.B pulse
+while it waits on something.
+.SH FILES
+.TP
+.I ~/.config/tablet/config.toml
+Profiles and settings.
+.TP
+.I ~/.config/tablet/style.css
+The drawer's style, over the theme taken from waybar.
+.TP
+.I $XDG_STATE_HOME/tablet/history.jsonl
+What happened, one JSON object a line.
+.TP
+.I $XDG_STATE_HOME/tablet/daemon.log ", " board.log
+Logs. Sign\-in URLs are never written to them.
+.TP
+.I $XDG_RUNTIME_DIR/tablet/tablet.sock
+The daemon's socket.
+.SH ENVIRONMENT
+.TP
+.BR TABLET_CONFIG_DIR ", " TABLET_STATE_DIR ", " TABLET_RUNTIME_DIR
+Move the config, the state and the socket, to run a second copy.
+.TP
+.B DBUS_SYSTEM_BUS_ADDRESS
+The bus openvpn3 is on.
+.SH EXIT STATUS
+0 on success, 1 on an error, 75 when the VPN is the problem
+.RB ( check ", " why ", " need )
+or when a daemon is already running
+.RB ( daemon ).
+.SH SEE ALSO
+.BR openvpn3 (8),
+.BR resolvectl (1),
+.BR waybar (5)

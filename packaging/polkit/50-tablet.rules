@@ -1,0 +1,14 @@
+// Lets active local members of wheel set a link's DNS servers, domains and
+// default route through systemd-resolved without a password: the calls
+// `resolvectl dns`, `resolvectl domain` and `resolvectl default-route` make,
+// and the ones Tablet makes for a profile with apply_dns = true.
+//
+//   sudo install -Dm644 50-tablet.rules /etc/polkit-1/rules.d/50-tablet.rules
+polkit.addRule(function (action, subject) {
+  if ((action.id == "org.freedesktop.resolve1.set-dns-servers" ||
+       action.id == "org.freedesktop.resolve1.set-domains" ||
+       action.id == "org.freedesktop.resolve1.set-default-route") &&
+      subject.local && subject.active && subject.isInGroup("wheel")) {
+    return polkit.Result.YES;
+  }
+});

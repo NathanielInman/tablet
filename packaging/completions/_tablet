@@ -1,0 +1,50 @@
+#compdef tablet
+# zsh completion for tablet
+
+_tablet_profiles() {
+    local -a names
+    local cfg=${TABLET_CONFIG_DIR:-${XDG_CONFIG_HOME:-$HOME/.config}/tablet}/config.toml
+    names=(${(f)"$(sed -n 's/^[[:space:]]*name[[:space:]]*=[[:space:]]*"\([^"]*\)".*/\1/p' $cfg 2>/dev/null)"})
+    _describe -t profiles 'profile' names
+}
+
+_tablet() {
+    local -a commands
+    commands=(
+        'connect:start a session (no profile: the default one)'
+        'disconnect:end a profile'"'"'s session, or every session'
+        'reconnect:end the session and start a new one'
+        'flip:what a click on the lamp does'
+        'ack:dismiss a dropped or failed profile'
+        'signin:open the waiting sign-in page again'
+        'check:check now: probes, DNS and traffic'
+        'why:which profile a host needs and whether it is up'
+        'need:run a command once the profile is connected'
+        'status:every profile and session'
+        'history:what happened, newest first'
+        'doctor:check openvpn3, the config and the bar'
+        'toggle:open or close the drawer from the clicked icon'
+        'show:open the drawer'
+        'hide:close the drawer'
+        'bar:the waybar module (JSON lines)'
+        'daemon:run the daemon in the foreground'
+        'restart:restart the daemon and the drawer'
+        'help:show the usage'
+    )
+    if (( CURRENT == 2 )); then
+        _describe -t commands 'tablet command' commands
+        _arguments '--version[print the version]'
+        return
+    fi
+    case $words[2] in
+        connect|reconnect|ack|signin|check) _tablet_profiles ;;
+        disconnect) _arguments '--all[every session]' '1:profile:_tablet_profiles' ;;
+        need) _arguments '--reason[why the agent needs it]:text' '--timeout[seconds to wait for you]:seconds' '1:profile:_tablet_profiles' ;;
+        toggle|show) _arguments '--center[open centered]' ;;
+        status) _arguments '--json[print the snapshot as JSON]' ;;
+        history) _arguments '--count[how many entries]:count' ;;
+        doctor) _arguments '--repair[run doctor.repair]' ;;
+    esac
+}
+
+_tablet "$@"

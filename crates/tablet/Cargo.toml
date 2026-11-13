@@ -1,0 +1,25 @@
+[package]
+name = "tablet"
+description = "Tablet: the daemon, CLI and waybar module"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+authors.workspace = true
+publish = false
+
+[[bin]]
+name = "tablet"
+path = "src/main.rs"
+
+[dependencies]
+tablet-core = { path = "../tablet-core" }
+bar-anchor = { path = "../bar-anchor" }
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+libc.workspace = true
+zbus = { version = "6", default-features = false, features = ["default-rt"] }
+# The Stream trait, to read zbus's signal streams one at a time.
+futures-core = "0.3"
