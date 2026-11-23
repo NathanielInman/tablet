@@ -47,7 +47,7 @@ flowchart LR
 
 | Crate | Role |
 |---|---|
-| `bar-anchor` | Anchoring (Hyprland, sway, niri) and panel placement. A copy of Tannoy's; its `Anchor` JSON is the same as Roundhouse's, Switchyard's and Tannoy's. |
+| [`bar-anchor`](https://github.com/NathanielInman/bar-anchor) | Anchoring and panel placement, shared by the waybar apps and pinned by tag in the root `Cargo.toml`. |
 | `tablet-core` | The model, openvpn3's statuses and sessions (`openvpn.rs`), the checks (`checks.rs`), the doctor (`doctor.rs`), routing names to profiles (`route.rs`), the daemon's state (`state.rs`: events in, effects out), the bar line, config, the socket protocol and the waybar reader. No D-Bus, no UI. |
 | `tablet` | The `tablet` binary: daemon, CLI and waybar module. Owns the zbus connection, the threads and the sockets, runs `session-start`, the probes and the doctor, and carries out the model's effects. |
 | `tablet-board` | The Linux drawer: GTK4 on `gtk4-layer-shell`, overlay layer, namespace `tablet`, keyboard exclusive while open. |
