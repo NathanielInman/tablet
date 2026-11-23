@@ -19,6 +19,8 @@ use tablet_core::protocol::{Event, Request};
 use tablet_core::text::{ago, bytes, rate, short_when, span, when};
 
 pub enum Msg {
+    /// Another app's drawer opened: close this one.
+    OtherDrawerOpened,
     Event(Event),
     /// A watched stylesheet or the config changed.
     Restyle,
@@ -418,6 +420,7 @@ impl Drawer {
 
     pub fn handle(self: &Rc<Self>, msg: Msg) {
         match msg {
+            Msg::OtherDrawerOpened => self.hide(),
             Msg::Event(Event::Snapshot { snapshot }) => {
                 *self.snap.borrow_mut() = Some(*snapshot);
                 if self.visible.get() {
@@ -613,6 +616,7 @@ impl Drawer {
         // Open on what needs you: openvpn3's health when it is broken,
         // else Now.
         if !was_visible {
+            bar_anchor::drawers::opened("tablet");
             let broken = self
                 .snap
                 .borrow()
